@@ -8,6 +8,7 @@ const app = express();
 const router = express.Router();
 
 const teststr = "test입니다.";
+const insub = kim
 
 app.use(
   "/",
