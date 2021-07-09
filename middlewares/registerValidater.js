@@ -14,7 +14,7 @@ module.exports = async(req, res, next) => {
     try {
         let { nickname, email, password, confirmPassword } = req.body;
         //회원가입 벨리데이션 
-        const { nickname, email, password, confirmPassword } = await registerValidation.validateAsync(req.body);
+        // const { nickname, email, password, confirmPassword } = await registerValidation.validateAsync(req.body);
 
         if (email === password) {
             res.status(400).send({

@@ -4,7 +4,7 @@ const authMiddleware = require("../middlewares/auth-Middleware");
 const userRouter = require("./user");
 const heartRouter = require("./heart");
 const productRouter = require("./product");
-const commentRouter = require("./coment");
+const commentRouter = require("./comment");
 
 
 router.use("/user", userRouter)
