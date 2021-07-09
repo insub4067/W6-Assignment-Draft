@@ -4,7 +4,7 @@ const authMiddleware = require("../middlewares/auth-Middleware");
 const registerValidator = require("../middlewares/registerValidater")
 const jwt = require("jsonwebtoken");
 const Joi = require("joi");
-const secretKey = requier("../config/secretKey");
+const secretKey = require("../config/secretKey");
 
 
 module.exports = router;
