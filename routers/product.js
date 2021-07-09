@@ -5,4 +5,6 @@ const registerValidator = require("../middlewares/resgisterMiddleware")
 const jwt = require("jsonwebtoken");
 const Joi = require("joi");
 
+
+
 module.exports = router;
