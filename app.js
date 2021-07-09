@@ -4,9 +4,12 @@ const jwt = require("jsonwebtoken");
 const Joi = require("joi");
 const connect = require("./config");
 const multer = require("multer");
+const mainRouter = require("./routers/index")
+
 
 const app = express();
 const router = express.Router();
+
 
 app.use(
   "/",

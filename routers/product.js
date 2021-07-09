@@ -7,6 +7,7 @@ const Joi = require("joi");
 const multer = require("multer");
 const Product = require("../models/product");
 
+//이미지 저장
 const storage = multer.diskStorage({
     destination: function(request, file, callback){
         callback(null, '../public/uploads/images');
@@ -17,6 +18,7 @@ const storage = multer.diskStorage({
     }
 });
 
+//이미지업로드
 const upload = multer({
     storage : storage,
     limits : {
