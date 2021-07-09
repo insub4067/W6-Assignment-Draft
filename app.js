@@ -3,12 +3,10 @@ const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const Joi = require("joi");
 const connect = require("./config");
+const multer = require("multer");
 
 const app = express();
 const router = express.Router();
-
-const teststr = "test입니다.";
-const insub = kim
 
 app.use(
   "/",
