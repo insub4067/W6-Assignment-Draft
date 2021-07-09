@@ -6,6 +6,8 @@ const jwt = require("jsonwebtoken");
 const Joi = require("joi");
 const multer = require("multer");
 const Product = require("../models/product");
+const Comment = require("../models/comment");
+
 
 //이미지 저장
 const storage = multer.diskStorage({
@@ -62,7 +64,9 @@ router.put("/:id/edit", upload.single('image'), authMiddleware, async(req, res) 
     if ( nickname !== dbNickname ){
         res.status(400).send({
             errorMessage: "사용자가 일치하지 않습니다"
+
         });
+        return
     }else{    
         await Product.findByIdAndUpdate(_id, {title, content, img})
     }
@@ -81,8 +85,10 @@ router.delete("/:id/delete", authMiddleware, async(req, res) => {
         res.status(400).send({
             errorMessage: "사용자가 일치하지 않습니다"
         })
+        return
     }else{
         await Product.findByIdAndDelete(_id)
+        await Comment.deleteMany({ _id })
     }
 
 
