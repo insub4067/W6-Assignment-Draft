@@ -4,6 +4,7 @@ const Joi = require("joi");
 
 
 const registerValidation = Joi.object({
+    email: Joi.string().email().required(),
     nickname: Joi.string().alphanum().min(3).trim().required(), //알파벳+숫자, 최소3자이상, 공백제거하고 받음
     password: Joi.string().min(4).trim().required(), //최소 4자이상, 공백제거하고 받음
     confirmPassword: Joi.ref("password"),}).with("password", "confirmPassword");
@@ -12,7 +13,8 @@ const registerValidation = Joi.object({
 module.exports = async(req, res, next) => {
 
     try {
-        let { nickname, email, password, confirmPassword } = req.body;
+        
+        
         //회원가입 벨리데이션 
         // const { nickname, email, password, confirmPassword } = await registerValidation.validateAsync(req.body);
 
