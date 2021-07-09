@@ -8,9 +8,8 @@ const app = express();
 const router = express.Router();
 
 const teststr = "test입니다.";
-const insub = kim
-
-const test = "wanho"
+const insub = kim;
+const test = "wanho";
 
 app.use(
   "/",

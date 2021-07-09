@@ -18,6 +18,8 @@
   },
   "homepage": "https://github.com/insub4067/W6_Homework_Backend_Basic_Repository#readme",
   "dependencies": {
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "mongoose": "^5.13.2",
+    "socket.io": "^4.1.2"
   }
 }
