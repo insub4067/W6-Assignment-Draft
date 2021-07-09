@@ -4,14 +4,17 @@ const jwt = require("jsonwebtoken");
 const Joi = require("joi");
 const connect = require("./config");
 
-
 const app = express();
 const router = express.Router();
 
+const teststr = "test입니다.";
 
-
-
-app.use( "/", express.urlencoded({ extended: false }), express.json(), mainRouter );
+app.use(
+  "/",
+  express.urlencoded({ extended: false }),
+  express.json(),
+  mainRouter
+);
 
 app.use("/api", express.urlencoded({ extended: false }), router);
 app.use(express.json());
