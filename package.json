@@ -1,0 +1,23 @@
+{
+  "name": "W6_Homework_Backend_Basic_Repository",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/insub4067/W6_Homework_Backend_Basic_Repository.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/insub4067/W6_Homework_Backend_Basic_Repository/issues"
+  },
+  "homepage": "https://github.com/insub4067/W6_Homework_Backend_Basic_Repository#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
