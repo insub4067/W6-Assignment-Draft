@@ -11,7 +11,7 @@ const User = require("../models/user");
 const { route } = require("./heart");
 
 
-
+//회원가입
 router.post('/register', registerValidator , async (req, res) => {
     // confirmPassword를 백에서 처리할지 프론트에서 처리할지? 
     try {
@@ -28,8 +28,8 @@ router.post('/register', registerValidator , async (req, res) => {
     }
 });
 
-
-router.get('/me', authMiddleware, async (req, res) => {
+//토큰 확인
+router.get('/auth', authMiddleware, async (req, res) => {
     
 
     const user = res.locals.user;
@@ -37,12 +37,16 @@ router.get('/me', authMiddleware, async (req, res) => {
     res.send({});
 });
 
+
 const loginValidater = Joi.object({
     email: Joi.string().email().required(),
     password: Joi.string().min(4).trim().required(),
 });
+
+//로그인
 router.post('/login', async (req, res) => {
     //매 브라우저마다 로딩시 토큰정보를 서버에 보내게 됨
+    
 
     try {
         const { email, password } = await loginValidater.validateAsync(

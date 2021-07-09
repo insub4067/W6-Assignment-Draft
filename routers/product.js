@@ -85,7 +85,6 @@ router.delete("/:id/delete", authMiddleware, async(req, res) => {
         res.status(400).send({
             errorMessage: "사용자가 일치하지 않습니다"
         })
-        return
     }else{
         await Product.findByIdAndDelete(_id)
         await Comment.deleteMany({ _id })
