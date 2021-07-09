@@ -26,12 +26,11 @@ router.post("/:productId/post", authMiddleware, async (req, res) => {
   }
 });
 
-
 //댓글 삭제
 router.delete("/:commentId/delete", authMiddleware, async (req, res) => {
   const { commentId } = req.params;
   const { nickname } = res.locals.user;
-  const comment = null;
+  let comment = null;
 
   try {
     comment = await Comment.findById({ commentId });
