@@ -2,8 +2,6 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/user");
 const secretKey = require("../config/secretKey");
 
-
-
 module.exports = async(req, res, next) => {
     const { authorization } = req.headers;
     const [tokenType, tokenValue] = authorization.split(" ");
@@ -17,8 +15,8 @@ module.exports = async(req, res, next) => {
 
 
     try {
-        const { nickname } = jwt.verify(tokenValue, secretKey)
-        const foundUser = await User.findOne({nickname})
+        const { userId } = jwt.verify(tokenValue, secretKey)
+        const foundUser = await User.findOne({userId})
         res.locals.user = foundUser;
         next();
         

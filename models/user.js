@@ -6,8 +6,15 @@ const UserSchema = new mongoose.Schema({
         require: true,
         unique: true,
     },
+    email: {
+        type: String,
+        require: true,
+        unique: true,
+    },
     password: String,
     confirmPassword: String,
+
+    //이미지 추가해야함.
 });
 
 
