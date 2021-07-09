@@ -9,11 +9,12 @@ const registerValidation = Joi.object({
   confirmPassword: Joi.ref("password"),
 }).with("password", "confirmPassword");
 
+//회원가입 벨리데이션
 module.exports = async (req, res, next) => {
-  const { nickname, email, password, confirmPassword } = req.body;
+
   try {
-    //회원가입 벨리데이션
-    // const { nickname, email, password, confirmPassword } = await registerValidation.validateAsync(req.body);
+    
+    const { nickname, email, password, confirmPassword } = await registerValidation.validateAsync(req.body);
 
     if (email === password) {
       res.status(400).send({
@@ -22,9 +23,7 @@ module.exports = async (req, res, next) => {
     }
 
     // 닉네임 중복검사
-    const existNick = await User.findOne({
-      $or: [{ email }, { nickname }],
-    });
+    const existNick = await User.findOne({ nickname });
 
     if (existNick) {
       res.status(400).send({
@@ -34,9 +33,7 @@ module.exports = async (req, res, next) => {
     }
 
     // 이메일 중복검사
-    const existemail = await User.findOne({
-      $or: [{ email }, { nickname }],
-    });
+    const existemail = await User.findOne({ email });
 
     if (existemail) {
       res.status(400).send({
