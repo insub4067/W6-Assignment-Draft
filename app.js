@@ -16,6 +16,10 @@ app.use(
   mainRouter
 );
 
+app.set('view engine', 'ejs');
+app.engine('html', require('ejs').renderFile);
+
+app.use("/images", express.static("images"));
 app.use("/api", express.urlencoded({ extended: false }), router);
 app.use(express.json());
 

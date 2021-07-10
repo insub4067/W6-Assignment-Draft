@@ -8,25 +8,35 @@ const multer = require("multer");
 const Product = require("../models/product");
 const Comment = require("../models/comment");
 
-
-//이미지 저장
+//이미지 저장공간 지정
 const storage = multer.diskStorage({
-    destination: function(request, file, callback){
-        callback(null, '../public/uploads/images');
+    destination: function(req, file, cb) {
+        cb(null, "./images/product");
     },
-
-    filename: function(request, file, callback){
-        callback(null, Date.now() + file.originalname)
+    filename: function(req, file, cb) {
+        cb(null, new Date().toISOString() + file.originalname)
     }
-});
+})
 
-//이미지업로드
-const upload = multer({
-    storage : storage,
-    limits : {
-        fieldSize:1024*1024*3,
+//이미지 파일 형식 체크
+const fileFilter = (req, file, cb) => {
+    if(file.mimetype === "image/jpeg" || file.mimetype === "image/png"){
+        cb(null, true);
+    }else{
+        cb(new Error("이미지 파일 형식이 맞지 않습니다"), false);
+    }
+};
+
+//이미지 저장 세팅
+const upload = multer({ 
+    storage: storage, 
+    limits: {
+    fileSize: 1024 * 1024 * 5
     },
-});
+    fileFilter: fileFilter
+})
+
+
 
 //상품 조회
 router.get("/", async(req, res) => {
@@ -36,14 +46,16 @@ router.get("/", async(req, res) => {
 
 });
 
-//상품 등록
-router.post("/post", upload.single('image'), authMiddleware, async(req,res) => {
 
-    const img = req.file.filename;
+//상품 등록
+router.post("/post", upload.single("img"), authMiddleware, async(req,res) => {
+
+
+    const productImage = req.file.path;
     const { title, price, content } = req.body;
     const{ user:  { nickname } }  = res.locals;
 
-    const product = new Product({ title, price, content, nickname, img })
+    const product = new Product({ title, price, content, productImage, nickname })
 
     await product.save();
     res.status(200).send({});
@@ -51,7 +63,7 @@ router.post("/post", upload.single('image'), authMiddleware, async(req,res) => {
 });
 
 //상품 수정
-router.put("/:id/edit", upload.single('image'), authMiddleware, async(req, res) => {
+router.put("/:id/edit", upload.single('img'), authMiddleware, async(req, res) => {
 
     const{ user:  { nickname } }  = res.locals;
     const { _id } = req.params
@@ -59,7 +71,7 @@ router.put("/:id/edit", upload.single('image'), authMiddleware, async(req, res) 
     const dbNickname = result.nickname
 
     const { title, content } = req.body;
-    const img = req.file.filename;
+    const productImage = req.file.path;
 
     if ( nickname !== dbNickname ){
         res.status(400).send({
@@ -68,7 +80,7 @@ router.put("/:id/edit", upload.single('image'), authMiddleware, async(req, res) 
         });
         return
     }else{    
-        await Product.findByIdAndUpdate(_id, {title, content, img})
+        await Product.findByIdAndUpdate(_id, {title, content, productImage})
     }
 
 });
@@ -81,7 +93,7 @@ router.delete("/:id/delete", authMiddleware, async(req, res) => {
     const result = await Product.findById(_id)
     const dbNickname = result.nickname
 
-    if ( nicknmae !== dbNickname){
+    if ( nickname !== dbNickname){
         res.status(400).send({
             errorMessage: "사용자가 일치하지 않습니다"
         })
