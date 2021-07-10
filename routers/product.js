@@ -7,8 +7,11 @@ const Comment = require("../models/comment");
 
 //이미지 저장공간 지정
 const storage = multer.diskStorage({
+
     destination: function(req, file, cb) {
         cb(null, "./images/product");
+
+
     },
     filename: function(req, file, cb) {
         cb(null, new Date().toISOString() + file.originalname)

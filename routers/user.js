@@ -5,10 +5,11 @@ const registerValidator = require("../middlewares/registerValidater")
 const jwt = require("jsonwebtoken");
 const Joi = require("joi");
 const secretKey = require("../config/secretKey");
-
-
+const multer = require("multer")
+const upload = multer({ dest: "../images/user"})
 const User = require("../models/user");
 const { route } = require("./heart");
+const crypto = require('crypto');
 
 
 //회원가입
@@ -17,7 +18,9 @@ router.post('/register', registerValidator , async (req, res) => {
 
     try {
         const { email, nickname, password } = req.body;
+        const encryptedPassword = crypto.createHash('sha512').update(password).digest('base64'); //암호화 
         const user = new User({ email, nickname, password });
+        user.password = encryptedPassword
         await user.save(); //
         res.status(201).send({ result: '개꿀' });
 
@@ -48,14 +51,15 @@ router.post('/login', async (req, res) => {
         const { email, password } = await loginValidater.validateAsync(
             req.body
         );
-
-        const user = await User.findOne({ email, password }).exec();
+        const encryptedPassword = crypto.createHash('sha512').update(password).digest('base64'); //암호화 
+        const user = await User.findOne({ $and : 
+            [{ email: email}, {password : encryptedPassword }] })
+        
 
         if (!user) {
             res.status(401).send({ errorMessage: '로그인에 실패했습니다. ' });
             return;
         }
-
         const token = jwt.sign( //토큰 발급
             { email: user.email, nickname: user.nickname, userId: user.userId },
             secretKey
