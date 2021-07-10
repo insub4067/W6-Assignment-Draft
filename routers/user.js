@@ -6,20 +6,56 @@ const jwt = require("jsonwebtoken");
 const Joi = require("joi");
 const secretKey = require("../config/secretKey");
 const multer = require("multer")
-const upload = multer({ dest: "../images/user"})
 const User = require("../models/user");
 const { route } = require("./heart");
 const crypto = require('crypto');
 
+const storage = multer.diskStorage({
+
+    destination: function(req, file, cb) {
+        cb(null, "./images/user");
+
+
+    },
+    filename: function(req, file, cb) {
+        cb(null, new Date().toISOString() + file.originalname)
+    }
+})
+
+//이미지 파일 형식 체크
+const fileFilter = (req, file, cb) => {
+    if(file.mimetype === "image/jpeg" || file.mimetype === "image/png"){
+        cb(null, true);
+    }else{
+        cb(new Error("이미지 파일 형식이 맞지 않습니다"), false);
+    }
+};
+
+//이미지 저장 세팅
+const upload = multer({ 
+    storage: storage, 
+    limits: {
+    fileSize: 1024 * 1024 * 5
+    },
+    fileFilter: fileFilter
+})
+
+// const upload = multer({
+//     dest: "./images/user"
+// })
 
 //회원가입
-router.post('/register', registerValidator , async (req, res) => {
-    
+router.post('/register', upload.single("image"), registerValidator, async (req, res) => {
+    //field = key ;
 
     try {
+        console.log(req.file)
         const { email, nickname, password } = req.body;
+        const userImage = req.file.path
+        
+
         const encryptedPassword = crypto.createHash('sha512').update(password).digest('base64'); //암호화 
-        const user = new User({ email, nickname, password });
+        const user = new User({ email, nickname, password , userImage });
         user.password = encryptedPassword
         await user.save(); //
         res.status(201).send({ result: '개꿀' });

@@ -36,6 +36,10 @@ const upload = multer({
     fileFilter: fileFilter
 })
 
+// const upload = multer({
+//     dest: "./images/user"
+// })
+
 //상품 조회
 router.get("/", async (req, res) => {
   const result = await Product.find().sort("-createdAt");
