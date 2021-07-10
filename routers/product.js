@@ -5,30 +5,40 @@ const multer = require("multer");
 const Product = require("../models/product");
 const Comment = require("../models/comment");
 
-//이미지 저장
+//이미지 저장공간 지정
 const storage = multer.diskStorage({
-  destination: function (request, file, callback) {
-    callback(null, "../public/uploads/images");
-  },
+    destination: function(req, file, cb) {
+        cb(null, "./images/product");
+    },
+    filename: function(req, file, cb) {
+        cb(null, new Date().toISOString() + file.originalname)
+    }
+})
 
-  filename: function (request, file, callback) {
-    callback(null, Date.now() + file.originalname);
-  },
-});
+//이미지 파일 형식 체크
+const fileFilter = (req, file, cb) => {
+    if(file.mimetype === "image/jpeg" || file.mimetype === "image/png"){
+        cb(null, true);
+    }else{
+        cb(new Error("이미지 파일 형식이 맞지 않습니다"), false);
+    }
+};
 
-//이미지업로드
-const upload = multer({
-  storage: storage,
-  limits: {
-    fieldSize: 1024 * 1024 * 3,
-  },
-});
+//이미지 저장 세팅
+const upload = multer({ 
+    storage: storage, 
+    limits: {
+    fileSize: 1024 * 1024 * 5
+    },
+    fileFilter: fileFilter
+})
 
 //상품 조회
 router.get("/", async (req, res) => {
   const result = await Product.find().sort("-createdAt");
   res.json({ result });
 });
+
 
 //상품 등록
 router.post(
@@ -42,7 +52,7 @@ router.post(
       user: { nickname },
     } = res.locals;
 
-    const product = new Product({ title, price, content, nickname, img });
+    const product = new Product({ title, price, content, productImage, nickname })
 
     await product.save();
     res.status(200).send({});
@@ -63,36 +73,37 @@ router.put(
     const dbNickname = result.nickname;
 
     const { title, content } = req.body;
-    const img = req.file.filename;
+    const productImage = req.file.path;
 
-    if (nickname !== dbNickname) {
-      res.status(400).send({
-        errorMessage: "사용자가 일치하지 않습니다",
-      });
-      return;
-    } else {
-      await Product.findByIdAndUpdate(_id, { title, content, img });
+    if ( nickname !== dbNickname ){
+        res.status(400).send({
+            errorMessage: "사용자가 일치하지 않습니다"
+
+        });
+        return
+    }else{    
+        await Product.findByIdAndUpdate(_id, {title, content, productImage})
     }
   }
 );
 
 //상품 삭제
-router.delete("/:id/delete", authMiddleware, async (req, res) => {
-  const {
-    user: { nickname },
-  } = res.locals;
-  const { _id } = req.params;
-  const result = await Product.findById(_id);
-  const dbNickname = result.nickname;
+router.delete("/:id/delete", authMiddleware, async(req, res) => {
 
-  if (nicknmae !== dbNickname) {
-    res.status(400).send({
-      errorMessage: "사용자가 일치하지 않습니다",
-    });
-  } else {
-    await Product.findByIdAndDelete(_id);
-    await Comment.deleteMany({ _id });
-  }
+    const{ user:  { nickname } }  = res.locals;
+    const { _id } = req.params
+    const result = await Product.findById(_id)
+    const dbNickname = result.nickname
+
+    if ( nickname !== dbNickname){
+        res.status(400).send({
+            errorMessage: "사용자가 일치하지 않습니다"
+        })
+    }else{
+        await Product.findByIdAndDelete(_id)
+        await Comment.deleteMany({ _id })
+    }
+
 });
 
 //detail 상품정보 가져오기

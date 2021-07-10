@@ -31,6 +31,11 @@ app.use(
   mainRouter
 );
 
+app.set("view engine", "ejs");
+app.engine("html", require("ejs").renderFile);
+
+app.use("/images", express.static("images"));
+
 http.listen(8080, () => {
   console.log("서버가 요청을 받을 준비가 됐어요");
 });
