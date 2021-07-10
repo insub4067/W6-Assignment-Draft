@@ -48,7 +48,7 @@ router.get("/", async (req, res) => {
 
 
 //상품 등록
-router.post("/post", upload.array("image", 5), authMiddleware, async (req, res) => {
+router.post("/post", upload.single("image", 5), authMiddleware, async (req, res) => {
 
     const productImage = req.file.path;
     const { title, price, content } = req.body;
