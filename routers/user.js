@@ -6,6 +6,7 @@ const jwt = require("jsonwebtoken");
 const Joi = require("joi");
 const secretKey = require("../config/secretKey");
 const multer = require("multer")
+const upload = multer({ dest: "../images/user"})
 const User = require("../models/user");
 const { route } = require("./heart");
 const crypto = require('crypto');
@@ -46,7 +47,7 @@ const loginValidater = Joi.object({
 router.post('/login', async (req, res) => {
 
     try {
-        let { email, password } = await loginValidater.validateAsync(
+        const { email, password } = await loginValidater.validateAsync(
             req.body
         );
         const encryptedPassword = crypto.createHash('sha512').update(password).digest('base64'); //암호화 
