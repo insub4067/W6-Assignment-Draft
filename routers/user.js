@@ -13,12 +13,10 @@ const { route } = require("./heart");
 
 //회원가입
 router.post('/register', registerValidator , async (req, res) => {
-    // confirmPassword를 백에서 처리할지 프론트에서 처리할지? 
+    
+
     try {
-
-
         const { email, nickname, password } = req.body;
-        
         const user = new User({ email, nickname, password });
         await user.save(); //
         res.status(201).send({ result: '개꿀' });
@@ -42,11 +40,8 @@ const loginValidater = Joi.object({
     email: Joi.string().email().required(),
     password: Joi.string().min(4).trim().required(),
 });
-
-//로그인
+//로그인 
 router.post('/login', async (req, res) => {
-    //매 브라우저마다 로딩시 토큰정보를 서버에 보내게 됨
-    
 
     try {
         const { email, password } = await loginValidater.validateAsync(
@@ -75,13 +70,5 @@ router.post('/login', async (req, res) => {
         });
     }
 });
-
-module.exports = router;
-
-
-
-
-
-
 
 module.exports = router;

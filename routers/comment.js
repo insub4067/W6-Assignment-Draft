@@ -1,9 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const authMiddleware = require("../middlewares/auth-Middleware");
-const registerValidator = require("../middlewares/registerValidater");
-const jwt = require("jsonwebtoken");
-const Joi = require("joi");
 const Comment = require("../models/comment");
 
 // 댓글 목록 요청
@@ -26,19 +23,15 @@ router.post("/:productId/post", authMiddleware, async (req, res) => {
   }
 });
 
-
 //댓글 삭제
 router.delete("/:commentId/delete", authMiddleware, async (req, res) => {
   const { commentId } = req.params;
   const { nickname } = res.locals.user;
-  const comment = null;
+  let comment = null;
 
-  try {
-    comment = await Comment.findById({ commentId });
-  } catch (error) {
-    res
-      .status(401)
-      .send({ message: "다른 사용자의 댓글은 삭제할 수 없습니다." });
+  comment = await Comment.findById(commentId);
+  if (!comment) {
+    res.status(401).send({ message: "존재하지 않는 댓글입니다." });
     return;
   }
 
@@ -51,7 +44,6 @@ router.delete("/:commentId/delete", authMiddleware, async (req, res) => {
 
   try {
     await Comment.deleteOne({ _id: commentId });
-    return;
   } catch (error) {
     res.status(400).send({ message: "댓글 삭제에 실패했습니다." });
   }
