@@ -29,9 +29,8 @@ router.delete("/:commentId/delete", authMiddleware, async (req, res) => {
   const { nickname } = res.locals.user;
   let comment = null;
 
-  try {
-    comment = await Comment.findById({ commentId });
-  } catch (error) {
+  comment = await Comment.findById(commentId);
+  if (!comment) {
     res.status(401).send({ message: "존재하지 않는 댓글입니다." });
     return;
   }
@@ -45,7 +44,6 @@ router.delete("/:commentId/delete", authMiddleware, async (req, res) => {
 
   try {
     await Comment.deleteOne({ _id: commentId });
-    return;
   } catch (error) {
     res.status(400).send({ message: "댓글 삭제에 실패했습니다." });
   }
