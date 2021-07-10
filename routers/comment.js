@@ -35,9 +35,7 @@ router.delete("/:commentId/delete", authMiddleware, async (req, res) => {
   try {
     comment = await Comment.findById({ commentId });
   } catch (error) {
-    res
-      .status(401)
-      .send({ message: "다른 사용자의 댓글은 삭제할 수 없습니다." });
+    res.status(401).send({ message: "존재하지 않는 댓글입니다." });
     return;
   }
 
