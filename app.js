@@ -15,12 +15,29 @@ io.on("connect", (socket) => {
   });
 
   // 상세 페이지 관련 이벤트
-  socket.on("WATCHING_DETAIL_FROM_FRONT", (productId) => {
+  socket.on("ENTER_DETAIL_FROM_FRONT", (productId) => {
     socket.join(productId);
 
-    io.to(productId).emit("WATCHING_DETAIL_FROM_BACK", productId);
+    // 상세 페이지 입장 시 해당 페이지 접속자들에게 접속자 수 보냄
+    io.to(productId).emit(
+      "ENTER_DETAIL_FROM_BACK",
+      io.sockets.adapter.rooms.get(productId).size
+    );
 
-    socket.on("COMMENT_CHANGED_FROM_FRONT", () => {});
+    // 댓글 작성하거나 삭제 시 프론트로 알려줌
+    socket.on("COMMENT_CHANGED_FROM_FRONT", (productId) => {
+      io.to(productId).emit("COMMENT_CHANGED_FROM_BACK");
+    });
+
+    // 상세 페이지 퇴장 시 해당 페이지 접속자들에게 접속자 수 보냄
+    socket.on("disconnect", () => {
+      if (io.sockets.adapter.rooms.get(productId)) {
+        io.to(productId).emit(
+          "ENTER_DETAIL_FROM_BACK",
+          io.sockets.adapter.rooms.get(productId).size
+        );
+      }
+    });
   });
 });
 
