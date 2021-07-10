@@ -40,6 +40,7 @@ const loginValidater = Joi.object({
     email: Joi.string().email().required(),
     password: Joi.string().min(4).trim().required(),
 });
+
 //로그인 
 router.post('/login', async (req, res) => {
 
