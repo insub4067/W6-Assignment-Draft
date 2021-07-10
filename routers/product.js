@@ -41,16 +41,11 @@ router.get("/", async (req, res) => {
 
 
 //상품 등록
-router.post(
-  "/post",
-  upload.single("image"),
-  authMiddleware,
-  async (req, res) => {
-    const img = req.file.filename;
+router.post("/post", upload.array("image", 5), authMiddleware, async (req, res) => {
+
+    const productImage = req.file.path;
     const { title, price, content } = req.body;
-    const {
-      user: { nickname },
-    } = res.locals;
+    const { user: { nickname } } = res.locals;
 
     const product = new Product({ title, price, content, productImage, nickname })
 
@@ -60,14 +55,9 @@ router.post(
 );
 
 //상품 수정
-router.put(
-  "/:id/edit",
-  upload.single("image"),
-  authMiddleware,
-  async (req, res) => {
-    const {
-      user: { nickname },
-    } = res.locals;
+router.put("/:id/edit", upload.array("image", 5), authMiddleware, async (req, res) => {
+
+    const { user: { nickname } } = res.locals;
     const { _id } = req.params;
     const result = await Product.findById(_id);
     const dbNickname = result.nickname;
