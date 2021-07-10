@@ -1,9 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const authMiddleware = require("../middlewares/auth-Middleware");
-const registerValidator = require("../middlewares/registerValidater");
-const jwt = require("jsonwebtoken");
-const Joi = require("joi");
 const Comment = require("../models/comment");
 
 // 댓글 목록 요청
