@@ -3,15 +3,15 @@ const socketIo = require("socket.io");
 const io = socketIo(http);
 
 function initSocket(socket) {
-  function enterRoom() {
+  function enterRoom(productId) {
     socket.join(productId);
   }
 
-  function toRoomMembers(event, data) {
+  function toRoomMembers(productId, event, data) {
     io.to(productId).emit(event, data);
   }
 
-  function getRoom() {
+  function getRoom(productId) {
     return io.sockets.adapter.rooms.get(productId);
   }
 
@@ -23,20 +23,28 @@ function initSocket(socket) {
     },
     watchEnterDetail: () => {
       socket.on("ENTER_DETAIL_FROM_FRONT", (productId) => {
-        enterRoom();
+        enterRoom(productId);
 
         //// 상세 페이지 입장 시 해당 페이지 접속자들에게 접속자 수 보냄
-        toRoomMembers("ENTER_DETAIL_FROM_BACK", getRoom().size);
+        toRoomMembers(
+          productId,
+          "ENTER_DETAIL_FROM_BACK",
+          getRoom(productId).size
+        );
 
         //// 댓글 작성하거나 삭제 시 프론트로 알려줌
         socket.on("COMMENT_CHANGED_FROM_FRONT", (productId) => {
-          toRoomMembers("COMMENT_CHANGED_FROM_BACK");
+          toRoomMembers(productId, "COMMENT_CHANGED_FROM_BACK");
         });
 
         //// 상세 페이지 퇴장 시 해당 페이지 접속자들에게 접속자 수 보냄
         socket.on("disconnect", () => {
-          if (getRoom()) {
-            toRoomMembers("ENTER_DETAIL_FROM_BACK", getRoom().size);
+          if (getRoom(productId)) {
+            toRoomMembers(
+              productId,
+              "ENTER_DETAIL_FROM_BACK",
+              getRoom(productId).size
+            );
           }
         });
       });
