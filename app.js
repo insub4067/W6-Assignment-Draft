@@ -6,9 +6,7 @@ const app = express();
 const http = Http.createServer(app);
 const cors = require('cors');
 
-app.use(cors({
-  origin: '프론트URL'
-}))
+app.use(cors())
 
 app.use(
   "/",

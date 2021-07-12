@@ -50,9 +50,12 @@ router.get("/", async (req, res) => {
         const { productId } = product;
         const heart = await Heart.findOne({ userId, productId });
         product['likeOrUnlike'] = heart? 'fas':'far';
+        const heartCount = await Heart.findOne({ userId, productId })
         }
   } else {
       for(product of result){
+        const { productId } = product;
+        const heartCount = await Heart.findOne({ userId, productId })
         product['likeOrUnlike'] = 'far';
     }
   }
