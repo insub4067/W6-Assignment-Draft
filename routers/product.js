@@ -49,14 +49,16 @@ router.get("/", async (req, res) => {
       for(product of result){
         const { productId } = product;
         const heart = await Heart.findOne({ userId, productId });
+        const heartsOfProduct = await Heart.find({ productId })
         product['likeOrUnlike'] = heart? 'fas':'far';
-        const heartCount = await Heart.findOne({ userId, productId })
+        product['heartCount'] = heartsOfProduct.length;
         }
   } else {
       for(product of result){
         const { productId } = product;
-        const heartCount = await Heart.findOne({ userId, productId })
+        const heartsOfProduct = await Heart.find({ productId })
         product['likeOrUnlike'] = 'far';
+        product['heartCount'] = heartsOfProduct.length;
     }
   }
   
