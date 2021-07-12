@@ -35,7 +35,7 @@ router.get('/auth', authMiddleware, async (req, res) => {
 
     const user = res.locals.user;
 
-    res.send({});
+    res.send({ userId:user.userId });
 });
 
 

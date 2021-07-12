@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const mongooseLeanVirtuals = require("mongoose-lean-virtuals");
 
 const ProductSchema = new mongoose.Schema({
     title: {
@@ -23,5 +24,14 @@ const ProductSchema = new mongoose.Schema({
     } 
 }, {timestamps: true});
 
+ProductSchema.virtual('productId').get(function () {
+    return this._id.toHexString();
+});
+
+ProductSchema.set('toJSON', {
+    virtuals: true,
+});
+
+ProductSchema.plugin(mongooseLeanVirtuals);
 
 module.exports = mongoose.model("Product", ProductSchema);
