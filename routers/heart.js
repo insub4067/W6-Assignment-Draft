@@ -9,13 +9,23 @@ router.post("/:productId", authMiddleware, async (req, res) => {
   const { action } = req.query;
   try {
     if (action === "like") {
-      await Heart.create({ userId, productId });
+      if (!(await Heart.findOne({ userId, productId }))){
+        await Heart.create({ userId, productId });
+      } else {
+        res.status(400).send({ message: '이미 좋아요를 한 게시글입니다.' });
+        return;
+      }
     } else {
-      await Heart.deleteOne({ userId, productId });
+      if (await Heart.findOne({ userId, productId })){
+        await Heart.deleteOne({ userId, productId });
+      } else {
+        res.status(400).send({ message: '이미 좋아요를 취소한 게시글입니다.' });
+        return;
+      }
     }
     res.send({});
   } catch (error) {
-    res.status(400).send({ message: "요청을 수행하는데 실패했습니다." });
+    res.status(400).send({ message: '요청을 수행하지 못했습니다.' });
   }
 });
 
