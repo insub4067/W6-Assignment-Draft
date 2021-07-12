@@ -43,7 +43,7 @@ const upload = multer({
 
 //상품 조회
 router.get("/", async (req, res) => {
-  const { userId } = req.query; // 좋아요 여부 
+  const { userId } = req.query;
   let result = await Product.find().sort("-createdAt").lean({ virtuals: true });
   if (userId) {
       for(product of result){
