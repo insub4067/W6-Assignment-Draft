@@ -37,6 +37,10 @@ const upload = multer({
     fileFilter: fileFilter
 })
 
+// const upload = multer({
+//     dest: "./images/user"
+// })
+
 //상품 조회
 router.get("/", async (req, res) => {
   const { userId } = req.query; // 좋아요 여부 
@@ -58,7 +62,7 @@ router.get("/", async (req, res) => {
 
 
 //상품 등록
-router.post("/post", upload.array("image", 5), authMiddleware, async (req, res) => {
+router.post("/post", upload.single("image", 5), authMiddleware, async (req, res) => {
 
     const productImage = req.file.path;
     const { title, price, content } = req.body;
