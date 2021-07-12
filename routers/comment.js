@@ -5,7 +5,8 @@ const Comment = require("../models/comment");
 
 // 댓글 목록 요청
 router.get("/:productId", async (req, res) => {
-  const comments = await Comment.find({});
+  const { productId } = req.params;
+  const comments = await Comment.find({ productId });
   res.send({ comments });
 });
 

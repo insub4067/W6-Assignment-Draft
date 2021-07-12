@@ -4,6 +4,11 @@ const mainRouter = require("./routers/index");
 const Http = require("http");
 const app = express();
 const http = Http.createServer(app);
+const cors = require('cors');
+
+app.use(cors({
+  origin: '프론트URL'
+}))
 
 app.use(
   "/",

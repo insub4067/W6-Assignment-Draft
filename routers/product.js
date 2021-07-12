@@ -4,6 +4,7 @@ const authMiddleware = require("../middlewares/auth-Middleware");
 const multer = require("multer");
 const Product = require("../models/product");
 const Comment = require("../models/comment");
+const Heart = require("../models/heart");
 
 //이미지 저장공간 지정
 const storage = multer.diskStorage({
@@ -42,7 +43,20 @@ const upload = multer({
 
 //상품 조회
 router.get("/", async (req, res) => {
-  const result = await Product.find().sort("-createdAt");
+  const { userId } = req.query;
+  let result = await Product.find().sort("-createdAt").lean({ virtuals: true });
+  if (userId) {
+      for(product of result){
+        const { productId } = product;
+        const heart = await Heart.findOne({ userId, productId });
+        product['likeOrUnlike'] = heart? 'fas':'far';
+        }
+  } else {
+      for(product of result){
+        product['likeOrUnlike'] = 'far';
+    }
+  }
+  
   res.json({ result });
 });
 
