@@ -45,22 +45,26 @@ const upload = multer({
 // })
 
 //회원가입
-router.post('/register', upload.single("image"), registerValidator, async (req, res) => {
+router.post('/register',registerValidator,upload.single("image"), async (req, res) => {
     //field = key ;
 
     try {
-        console.log(req.file)
+        
         const { email, nickname, password } = req.body;
-        const userImage = req.file.path
+        // const userImage = req.file.path
         
 
         const encryptedPassword = crypto.createHash('sha512').update(password).digest('base64'); //암호화 
-        const user = new User({ email, nickname, password , userImage });
+        const user = new User({ email, nickname, password });
         user.password = encryptedPassword
         await user.save(); //
         res.status(201).send({ result: '개꿀' });
 
     } catch(err) {
+        console.log(err);
+        res.status(400).send({
+            errorMessage: '회원가입에 실패하였습니다 ',
+        });
 
     }
 });
@@ -111,5 +115,8 @@ router.post('/login', async (req, res) => {
         });
     }
 });
+
+
+
 
 module.exports = router;

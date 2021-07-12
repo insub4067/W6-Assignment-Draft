@@ -9,11 +9,13 @@ const registerValidation = Joi.object({
   confirmPassword: Joi.ref("password"),
 }).with("password", "confirmPassword");
 
+
+
 //회원가입 벨리데이션
 module.exports = async (req, res, next) => {
 
   try {
-    
+    console.log(req.body)
     const { nickname, email, password, confirmPassword } = await registerValidation.validateAsync(req.body);
 
     if (email === password) {

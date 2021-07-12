@@ -13,10 +13,10 @@ const UserSchema = new mongoose.Schema({
     },
     password: String,
     //이미지 추가해야함.
-    userImage:{
-        type: String,
-        required: true
-    }  
+    // userImage:{
+    //     type: String,
+    //     required: true
+    // }  
 });
 
 
