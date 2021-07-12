@@ -123,8 +123,11 @@ router.get("/:id", async (req, res) => {
     const { _id } = req.params;
 
     const result = await Product.findById(_id);
+    const heart = await Heart.find({productId:_id});// 해당 게시물의 좋아요 갯수 가져오기
+    const heart_count = heart.length;
+    
 
-    res.send(result);
+    res.send(result, heart_count);
   } catch (error) {
     console.error(error);
     next(error);
